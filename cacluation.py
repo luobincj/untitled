@@ -69,8 +69,8 @@ def calAddSub(s):
             else:
                 x,y = special_sub
                 result = float(x)-float(y)
-        s = str(result)
-        s = formatStr(s)
+            s = s.replace(sub_str,'+'+str(result))      #*****!!!!
+            s = formatStr(s)
     return s
 
 #完成乘除
@@ -81,31 +81,32 @@ def calMulDev(formated_string):
     while re.search(regular,formated_string):       #第一次2*-3.1  第二次-6.2*10/4    第三次-62/4
         #获取表达式
         expression = re.search(regular,formated_string).group()     #第一次2*-3.1  （*10/4      第二次-6.2*10   （/4
-        if formatStr(expression):
+        if formatStr(expression) :
             if expression.count('*')==1:
                 x,y = expression.split('*')     #   2    -3.1    #-6.2  10
                 mul_result = str(float(x)*float(y))     #-6.2
                 formated_string = formated_string.replace(expression,mul_result)    #-6.2*10/4  #-62/4
                 formated_string = formatStr(formated_string)    #-6.2*10/4  #-62/4
-            if expression.count('/')==1:    #第三次 -62/4
+            if expression.count('/')==1 and not re.findall('[/0]+',expression):    #第三次 -62/4
                 x,y = expression.split('/')     #-62  4
                 mul_result = str(float(x)/float(y))      #-62
                 formated_string = formated_string.replace(expression,mul_result)         #-15.5
                 formated_string = formatStr(formated_string)        #-15.5
+            else:
+                break
     return formated_string
 
 if __name__ == '__main__':
-    caclStr = '2+5*-3.1*(10+5/(5+(8+9)))'
+    caclStr = '2+5*-3.1*(10+5/(2+(8-5+4-9)))'
     if checkOut(caclStr):
         while caclStr.count('(')>0:
-            strs = re.search('\([^()]*\)',caclStr).group()
+            strs = re.search('\([^()]*\)',caclStr).group()        #(8+9)
             newstrs = calMulDev(strs)
-            newStr = calAddSub(newstrs)
-            caclStr = formatStr(caclStr.replace(strs,newStr[1:-1]))
+            newstrs = calAddSub(newstrs)
+            caclStr = formatStr(caclStr.replace(strs,newstrs[1:-1]))
         else:
-
             newStr = formatStr(caclStr)
             newStr = calMulDev(newStr)
             newStr = calAddSub(newStr)
-            print(caclStr)
-            print(newStr)
+        print(caclStr)
+        print(newStr)
