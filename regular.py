@@ -38,3 +38,14 @@ import re
 # print(next(ret))        #<_sre.SRE_Match object; span=(4, 5), match='2'>
 # print(next(ret).group())        #4
 # print(ret2)     #['2', '4', '5', '4', '5', '2', '2', '3']
+
+regular='\-?\d+\.?\d*[*/]\-?\d+\.?\d*'
+string='3+4.2*3-4.4/2'
+while re.search(regular,string):
+    expression = re.search(regular,string).group()
+    print(expression)
+# expressions = re.findall(regular,string)
+# print(expressions)
+# for i in re.findall(regular,string):
+#     exprssion = re.search(regular,i).group()
+#     print(exprssion)
